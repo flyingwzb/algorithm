@@ -2,6 +2,7 @@ package com.example.demo.day01;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -98,7 +99,7 @@ public class Solution {
 
     }
 
-    public boolean backtracking(int[] nums, int k, int target, int cur, int start, boolean[] used) {
+    private boolean backtracking(int[] nums, int k, int target, int cur, int start, boolean[] used) {
         // 返回条件
         if (k == 0) {
             return true;
@@ -187,6 +188,116 @@ public class Solution {
         return dp[amount];
     }
 
+    /**
+     * 我们有一个由平面上的点组成的列表 points。需要从中找出 K 个距离原点 (0, 0) 最近的点。
+     * （这里，平面上两点之间的距离是欧几里德距离。）
+     * 你可以按任何顺序返回答案。除了点坐标的顺序之外，答案确保是唯一的。
+     * 示例 1：
+     * 输入：points = [[1,3],[-2,2]], K = 1
+     * 输出：[[-2,2]]
+     *
+     * 解释：
+     * (1, 3) 和原点之间的距离为 sqrt(10)，
+     * (-2, 2) 和原点之间的距离为 sqrt(8)，
+     * 由于 sqrt(8) < sqrt(10)，(-2, 2) 离原点更近。
+     * 我们只需要距离原点最近的 K = 1 个点，所以答案就是 [[-2,2]]。
+     *
+     * 示例 2：
+     * 输入：points = [[3,3],[5,-1],[-2,4]], K = 2
+     * 输出：[[3,3],[-2,4]]
+     *
+     * （答案 [[-2,4],[3,3]] 也会被接受。）
+     */
+    public int[][] kClosest(int[][] points, int K) {
+        int n = points.length;
+        int[] dists = new int[n];
+        for (int i = 0; i < n; ++i) {
+            dists[i] = dist(points[i]);
+        }
+
+        Arrays.sort(dists);
+        int distK = dists[K-1];
+
+        int[][] ans = new int[K][2];
+        int t = 0;
+        for (int[] point : points) {
+            if (dist(point) <= distK) {
+                ans[t++] = point;
+            }
+        }
+        return ans;
+    }
+
+    private int dist(int[] point) {
+        return point[0] * point[0] + point[1] * point[1];
+    }
+
+    /**
+     * 在一个仓库里，有一排条形码，其中第 i 个条形码为 barcodes[i]。
+     * 请你重新排列这些条形码，使其中两个相邻的条形码 不能 相等。 你可以返回任何满足该要求的答案，此题保证存在答案。
+     * 示例 1：
+     * 输入：[1,1,1,2,2,2]
+     * 输出：[2,1,2,1,2,1]
+     *
+     * 示例 2：
+     * 输入：[1,1,1,1,2,2,3,3]
+     * 输出：[1,3,1,3,2,1,2,1]
+     */
+    public int[] rearrangeBarcodes(int[] barcodes) {
+        /* 存在特殊情况结果类似 2, 1, 2, 1, 2
+         * 因此优先使用出现次数最多的元素填充奇数位
+         */
+        /* 统计每个数据的出现次数 */
+        int len = barcodes.length;
+        int[] count = new int[10001];
+        for (int i = 0; i < len; i++) {
+            count[barcodes[i]]++;
+        }
+        /* 得到出现次数最多的数字 */
+        int maxCnt = 0;
+        int maxNum = 0;
+        for (int i = 1; i < 10001; i++) {
+            if (count[i] > maxCnt) {
+                maxCnt = count[i];
+                maxNum = i;
+            }
+        }
+        /* 先填充奇数位 */
+        int[] result = new int[len];
+        // result 填充位置
+        int pos = 0;
+        // count 使用位置
+        int idx = 0;
+        /* 先使用出现次数最多的数字填充奇数位, 最多恰好填满 */
+        while (pos < len) {
+            if (count[maxNum] <= 0) {
+                break;  // 填充完毕
+            } else {
+                count[maxNum]--;
+                result[pos] = maxNum;
+                pos += 2;
+            }
+        }
+        /* 尝试继续填充奇数位 */
+        filling(len, count, result, pos, idx);
+        /* 继续填充偶数位 */
+        pos = 1;
+        filling(len, count, result, pos, idx);
+        return result;
+    }
+
+    private void filling(int len, int[] count, int[] result, int pos, int idx) {
+        while (pos < len) {
+            if (count[idx] <= 0) {
+                idx++;
+                continue;
+            } else {
+                count[idx]--;
+                result[pos] = idx;
+                pos += 2;
+            }
+        }
+    }
 
 
 }
