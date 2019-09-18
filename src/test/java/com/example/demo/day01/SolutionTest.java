@@ -1,12 +1,11 @@
 package com.example.demo.day01;
 
 import com.example.demo.AlgorithmApplicationTests;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-
-import static org.junit.Assert.*;
 
 /**
  * @className: SolutionTest
@@ -16,6 +15,7 @@ import static org.junit.Assert.*;
  * @since: V1.0
  * @date: 2019/9/18 14:10
  */
+@Slf4j
 public class SolutionTest extends AlgorithmApplicationTests{
 
     @Autowired
@@ -54,7 +54,14 @@ public class SolutionTest extends AlgorithmApplicationTests{
                 {10, 13, 14, 17, 24},
                 {18, 21, 23, 26, 30}
         };
-        boolean b = solution.searchMatrix(matrix, 5);
+        boolean b = solution.searchMatrix(matrix, 20);
         System.out.println(b);
+    }
+
+    @Test
+    public void change() {
+        int[] coins = {2};
+        int change = solution.change(3, coins);
+        System.out.println(change);
     }
 }
